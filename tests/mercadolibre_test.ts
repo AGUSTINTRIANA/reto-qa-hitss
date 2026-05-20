@@ -7,7 +7,7 @@ interface Product {
 }
 
 async function runChallenge() {
-  console.log('🚀 Iniciando reto de automatización...');
+  console.log('Iniciando reto de automatización...');
 
   // Headless por defecto. Cambia a false para ver el navegador.
   const browser = await chromium.launch({
@@ -19,10 +19,8 @@ async function runChallenge() {
   const page = await context.newPage();
 
   try {
-    // ==========================================================
     // PARTE 1: UI AUTOMATION
-    // ==========================================================
-    console.log('🔗 Abriendo Mercado Libre...');
+    console.log('Abriendo Mercado Libre...');
 
     // Usamos URL directa para evitar selección de país y reducir riesgo de CAPTCHA
     await page.goto(
@@ -35,10 +33,8 @@ async function runChallenge() {
       timeout: 30000
     });
 
-    // ----------------------------------------------------------
     // FILTRO: Nuevos
-    // ----------------------------------------------------------
-    console.log('📌 Aplicando filtro: Nuevos');
+    console.log('Aplicando filtro: Nuevos');
 
     const newFilter = page.locator('a').filter({ hasText: /^Nuevo$/ }).first();
     if (await newFilter.isVisible().catch(() => false)) {
@@ -46,10 +42,8 @@ async function runChallenge() {
       await page.waitForLoadState('networkidle');
     }
 
-    // ----------------------------------------------------------
     // FILTRO: Ciudad de México
-    // ----------------------------------------------------------
-    console.log('📌 Aplicando filtro: Ciudad de México');
+    console.log('Aplicando filtro: Ciudad de México');
 
     const cdmxFilter = page
       .locator('a')
@@ -60,13 +54,11 @@ async function runChallenge() {
       await cdmxFilter.click();
       await page.waitForLoadState('networkidle');
     } else {
-      console.log('⚠️ No se encontró el filtro Ciudad de México, continuando...');
+      console.log('No se encontró el filtro Ciudad de México, continuando...');
     }
 
-    // ----------------------------------------------------------
     // ORDENAR: Menor precio
-    // ----------------------------------------------------------
-    console.log('⚖️ Ordenando por menor precio');
+    console.log('Ordenando por menor precio');
 
     const sortButton = page.locator('span.andes-dropdown__display-values').first();
     if (await sortButton.isVisible().catch(() => false)) {
@@ -83,9 +75,8 @@ async function runChallenge() {
       }
     }
 
-    // ==========================================================
+    
     // EXTRAER PRIMEROS 5 RESULTADOS
-    // ==========================================================
     console.log('\n===== RESULTADOS EXTRAÍDOS DE LA UI =====');
 
     const items = page.locator('li.ui-search-layout__item');
@@ -118,9 +109,7 @@ async function runChallenge() {
       console.log(`${i + 1}. ${name} - $${price}`);
     }
 
-    // ==========================================================
     // PARTE 2: API VALIDATION
-    // ==========================================================
     console.log('\n===== CONSULTANDO API DE MERCADO LIBRE =====');
 
     const response = await axios.get(
@@ -132,9 +121,7 @@ async function runChallenge() {
       price: Number(item.price)
     }));
 
-    // ==========================================================
     // COMPARACIÓN UI VS API
-    // ==========================================================
     console.log('\n===== COMPARACIÓN UI VS API =====');
 
     let matches = 0;
@@ -153,32 +140,30 @@ async function runChallenge() {
 
       if (match) {
         matches++;
-        console.log(`✅ Coincide: ${uiProduct.name}`);
+        console.log(`   Coincide: ${uiProduct.name}`);
         console.log(`   UI : $${uiProduct.price}`);
         console.log(`   API: $${match.price}`);
 
         if (uiProduct.price !== match.price) {
-          console.log('   ⚠️ Diferencia de precio detectada');
+          console.log('    Diferencia de precio detectada');
         }
       } else {
-        console.log(`❌ No encontrado en API: ${uiProduct.name}`);
+        console.log(`No encontrado en API: ${uiProduct.name}`);
       }
     }
 
-    // ==========================================================
     // VALIDACIÓN FINAL
-    // ==========================================================
-    console.log(`\n🎯 Coincidencias totales: ${matches} de 5`);
+    console.log(`\n Coincidencias totales: ${matches} de 5`);
 
     if (matches >= 3) {
-      console.log('✅ RETO APROBADO: al menos 3 productos coinciden con la API.');
+      console.log(' RETO APROBADO: al menos 3 productos coinciden con la API.');
     } else {
       throw new Error(
         `Solo ${matches} productos coincidieron con la API. Se requieren al menos 3.`
       );
     }
   } catch (error) {
-    console.error('❌ Error durante la ejecución:', error);
+    console.error(' Error durante la ejecución:', error);
 
     // Captura automática en caso de fallo
     await page.screenshot({
@@ -187,7 +172,7 @@ async function runChallenge() {
     });
   } finally {
     await browser.close();
-    console.log('\n🏁 Ejecución finalizada.');
+    console.log('\n Ejecución finalizada.');
   }
 }
 
