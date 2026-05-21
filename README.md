@@ -24,7 +24,7 @@
 
 
 
-\## Notas sobre el desarrollo
+\## Notas 
 
 Durante el desarrollo local con MercadoLibre me encontré con bloqueos de seguridad (CAPTCHA y error 403) al intentar buscar artículos. Para resolver el reto de forma efectiva, implementé la automatización principal utilizando Amazon México para demostrar la extracción de elementos reales, e incluí el script de MercadoLibre con datos simulados (Mock Data). 
 
